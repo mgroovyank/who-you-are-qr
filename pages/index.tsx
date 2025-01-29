@@ -9,14 +9,14 @@ export default function Page() {
       <QrReader
         onResult={(result, error) => {
           if (!!result) {
-            setData(result?.text);
+            setData("Found Result");
           }
 
           if (!!error) {
             console.info(error);
           }
         }}
-        style={{ width: "100%" }}
+        constraints={undefined}
       />
       <p>{data}</p>
     </>
