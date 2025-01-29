@@ -4,6 +4,10 @@ import { QrReader } from "react-qr-reader";
 export default function Page() {
   const [data, setData] = useState("No result");
 
+  const scannerConstraints: MediaTrackConstraints = {
+    facingMode: "environment",
+  };
+
   return (
     <>
       <QrReader
@@ -16,7 +20,7 @@ export default function Page() {
             console.info(error);
           }
         }}
-        constraints={undefined}
+        constraints={scannerConstraints}
       />
       <p>{data}</p>
     </>
