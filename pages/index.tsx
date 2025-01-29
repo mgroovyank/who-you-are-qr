@@ -11,9 +11,10 @@ export default function Page() {
   return (
     <>
       <QrReader
+        scanDelay={300}
         onResult={(result, error) => {
           if (!!result) {
-            setData("Found Result");
+            setData(result.getText());
           }
 
           if (!!error) {
