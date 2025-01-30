@@ -5,7 +5,8 @@ import { QrReader } from "react-qr-reader";
 
 export default function Page() {
   const [data, setData] = useState("No result");
-  const [lastScanned, setLastScanned] = useState("");
+  // const [lastScanned, setLastScanned] = useState("test");
+  const [displayScanner, setDisplayScanner] = useState<boolean>(false);
 
   const scannerConstraints: MediaTrackConstraints = {
     facingMode: "environment",
@@ -14,13 +15,14 @@ export default function Page() {
   async function handleScanResult(result: Result) {
     console.log(result);
     const uuid: string = result.getText().trim();
+
     console.log("uuid: " + uuid);
-    console.log("lastScanned:" + lastScanned);
-    if (result && uuid === lastScanned) {
-      console.log("Already Scanned!!!");
-      return;
-    }
-    setLastScanned(uuid);
+    // console.log("lastScanned:" + lastScanned);
+    // if (uuid === lastScanned) {
+    //   console.log("Already Scanned!!!");
+    //   return;
+    // }
+    // setLastScanned(uuid);
 
     const options = {
       method: "POST",
@@ -32,6 +34,14 @@ export default function Page() {
         uuid: uuid,
       }),
     };
+
+    console.log("Checking if QR CODE has already been used...");
+    let qrCodeCheckStreamRes = await fetch("/api/check-status", options);
+    console.log("qrCodeCheckStreamRes:", qrCodeCheckStreamRes);
+    if (qrCodeCheckStreamRes.status != 200) {
+      setData("INVALID QR CODE - ALREADY USED");
+      return;
+    }
 
     console.log("Marking status in supabase...");
     let resReadableStream = await fetch("/api/mark-status", options);
@@ -47,20 +57,34 @@ export default function Page() {
 
   return (
     <>
-      <QrReader
-        scanDelay={1000}
-        onResult={(result, error) => {
-          if (!!result) {
-            handleScanResult(result);
-          }
+      {displayScanner && (
+        <QrReader
+          scanDelay={1000}
+          onResult={async (result, error) => {
+            if (!!result) {
+              await handleScanResult(result);
+              setDisplayScanner(false);
+            }
 
-          if (!!error) {
-            console.log(error);
-          }
-        }}
-        constraints={scannerConstraints}
-      />
+            if (!!error) {
+              console.log("Error during scan!!");
+              // console.log("lastScanned: ", lastScanned);
+              console.log(error);
+            }
+          }}
+          constraints={scannerConstraints}
+        />
+      )}
       <h2>{data}</h2>
+      <button
+        onClick={() => {
+          setDisplayScanner(true);
+          setData("No Result");
+        }}
+      >
+        {" "}
+        Scan Next
+      </button>
     </>
   );
 }

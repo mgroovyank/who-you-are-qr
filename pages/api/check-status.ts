@@ -10,13 +10,12 @@ export default async function handler(
   res: NextApiResponse<ResponseData>
 ) {
   const { uuid } = await req.body;
-  console.log("UUID received by API:", uuid);
-
+  console.log("UUID received by check-status API:", uuid);
   const { data, error } = await supabase
     .from("qrCodeStatus")
-    .update({ status: 1 })
+    .select()
     .eq("uuid", uuid)
-    .select();
+    .eq("status", 1);
 
   if (error) {
     console.log(error);
@@ -25,15 +24,13 @@ export default async function handler(
       message: "Unable to mark Person as a valid person in database!!",
     });
   }
-  if (data.length == 0) {
-    console.log(
-      "Invalid QR Code!! This QR Code doesn't belong to Who-You-Are-QR!!"
-    );
+
+  if (data.length > 0) {
+    console.log("This QR Code has already been used!!!");
     return res.status(500).json({
-      message:
-        "Invalid QR Code!! This QR Code doesn't belong to Who-You-Are-QR!!",
+      message: "INVALID QR CODE - ALREADY USED",
     });
   }
-  return res.status(200).json({ message: data[0] });
+  return res.status(200).json({ message: "QR CODE is still unused!!" });
 }
 //f884d98e-5574-4fa1-982c-6d1d56e4feee
