@@ -1,3 +1,4 @@
+"use client";
 import { Result } from "@zxing/library";
 import { useState } from "react";
 import { QrReader } from "react-qr-reader";
@@ -10,14 +11,37 @@ export default function Page() {
     facingMode: "environment",
   };
 
-  function handleScanResult(result: Result) {
+  async function handleScanResult(result: Result) {
     console.log(result);
-    setData(result.getText());
-    const uuid: string = result.getText();
+    const uuid: string = result.getText().trim();
     console.log("uuid: " + uuid);
-    if (uuid == lastScanned) {
+    console.log("lastScanned:" + lastScanned);
+    if (result && uuid === lastScanned) {
       console.log("Already Scanned!!!");
       return;
+    }
+    setLastScanned(uuid);
+
+    const options = {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json;charset=UTF-8",
+      },
+      body: JSON.stringify({
+        uuid: uuid,
+      }),
+    };
+
+    console.log("Marking status in supabase...");
+    let resReadableStream = await fetch("/api/mark-status", options);
+    console.log("resReadableStream:", resReadableStream);
+    if (resReadableStream.status == 200) {
+      setData("VALID QR CODE!!");
+    } else {
+      let res = await resReadableStream.json();
+      console.log("res.message: ", res.message);
+      setData(res.message);
     }
   }
 
@@ -36,7 +60,7 @@ export default function Page() {
         }}
         constraints={scannerConstraints}
       />
-      <p>{data}</p>
+      <h2>{data}</h2>
     </>
   );
 }
