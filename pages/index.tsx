@@ -63,6 +63,7 @@ export default function Page() {
           onResult={(result, error) => {
             if (!!result) {
               handleScanResult(result);
+              setData("Scanning...");
               setDisplayScanner(false);
             }
 
