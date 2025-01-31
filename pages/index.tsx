@@ -18,11 +18,11 @@ export default function Page() {
 
     console.log("uuid: " + uuid);
     console.log("lastScanned:" + lastScanned);
-    if (uuid === lastScanned) {
-      console.log("Already Scanned!!!");
-      return;
-    }
-    setLastScanned(uuid);
+    // if (uuid === lastScanned) {
+    //   console.log("Already Scanned!!!");
+    //   return;
+    // }
+    // setLastScanned(uuid);
 
     const options = {
       method: "POST",
@@ -59,7 +59,7 @@ export default function Page() {
     <>
       {displayScanner && (
         <QrReader
-          scanDelay={4000}
+          scanDelay={2000}
           onResult={(result, error) => {
             if (!!result) {
               handleScanResult(result);
