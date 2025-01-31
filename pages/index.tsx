@@ -20,6 +20,7 @@ export default function Page() {
     console.log("lastScanned:" + lastScanned);
     if (uuid === lastScanned) {
       console.log("Already Scanned!!!");
+      setData("INVALID - Already Scanned!");
       return;
     }
     setLastScanned(uuid);
