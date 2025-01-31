@@ -5,7 +5,7 @@ import { QrReader } from "react-qr-reader";
 
 export default function Page() {
   const [data, setData] = useState("No result");
-  // const [lastScanned, setLastScanned] = useState("test");
+  const [lastScanned, setLastScanned] = useState("test");
   const [displayScanner, setDisplayScanner] = useState<boolean>(false);
 
   const scannerConstraints: MediaTrackConstraints = {
@@ -17,12 +17,12 @@ export default function Page() {
     const uuid: string = result.getText().trim();
 
     console.log("uuid: " + uuid);
-    // console.log("lastScanned:" + lastScanned);
-    // if (uuid === lastScanned) {
-    //   console.log("Already Scanned!!!");
-    //   return;
-    // }
-    // setLastScanned(uuid);
+    console.log("lastScanned:" + lastScanned);
+    if (uuid === lastScanned) {
+      console.log("Already Scanned!!!");
+      return;
+    }
+    setLastScanned(uuid);
 
     const options = {
       method: "POST",
