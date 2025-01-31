@@ -59,7 +59,7 @@ export default function Page() {
     <>
       {displayScanner && (
         <QrReader
-          scanDelay={4000}
+          scanDelay={3000}
           onResult={async (result, error) => {
             if (!!result) {
               await handleScanResult(result);
