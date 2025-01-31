@@ -47,7 +47,7 @@ export default function Page() {
     let resReadableStream = await fetch("/api/mark-status", options);
     console.log("resReadableStream:", resReadableStream);
     if (resReadableStream.status == 200) {
-      setData("VALID QR CODE!!");
+      setData("OK - PASS");
     } else {
       let res = await resReadableStream.json();
       console.log("res.message: ", res.message);
@@ -59,7 +59,7 @@ export default function Page() {
     <>
       {displayScanner && (
         <QrReader
-          scanDelay={3000}
+          scanDelay={4000}
           onResult={async (result, error) => {
             if (!!result) {
               await handleScanResult(result);
